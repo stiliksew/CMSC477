@@ -1,3 +1,54 @@
+from robomaster import robot
+
+def movePath(path):
+    print("Beginning Navigation")
+    queue = path
+    queue[0] = 60
+    print(queue)
+    current_node = int(queue.pop(0))
+
+    while queue:
+        goal_node = int(queue.pop(0))
+        #nodes must be neighbors
+        direction = current_node - goal_node
+        print(direction)
+        #if positive, moving down/right (50-40)
+        #if negative, moving up/left (50-60)
+        #if difference of 10, moving up/down
+        #if difference of 1, moving right/left
+        #if difference of 9, negative slope diagonal
+        #if difference of 11, positive slope diagonal
+        #use all of these to create a decision tree
+        if direction < 0:
+            if direction == -1: #moving right
+                print("Moving Right...")
+                ep_chassis.move(x=0, y=-.35, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == -10: #moving up
+                print("Moving Up...")
+                ep_chassis.move(x=-.35, y=0, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == -11: #moving up & right
+                print("Moving Up & Right...")
+                ep_chassis.move(x=-.35, y=-.35, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == -9: #moving up & left
+                print("Moving Up & Left...")
+                ep_chassis.move(x=-.35, y=.35, z=0, xy_speed=0.6).wait_for_completed()
+        if direction > 0:
+            if direction == 1: #moving left
+                print("Moving Left...")
+                ep_chassis.move(x=0, y=.35, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == 10: #moving down
+                print("Moving Down...")
+                ep_chassis.move(x=.35, y=0, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == 11: #moving down & left
+                print("Moving Down & Left...")
+                ep_chassis.move(x=.35, y=.35, z=0, xy_speed=0.6).wait_for_completed()
+            if direction == 9: #moving down & right
+                print("Moving Down & Right...")
+                ep_chassis.move(x=.35, y=-.35, z=0, xy_speed=0.6).wait_for_completed()
+        current_node = goal_node
+            
+    return
+
 def bfs(graph, start, goal): #FIFO means if you've been waiting the longest, you get priority
     queue = [(start, [start])]
     visited = set()
@@ -57,32 +108,32 @@ graph = {
     '210': ['19','29','39','310','110'],
     '30': ['20','21','31','41','40'],
     '31': ['20','30','40','41','32','22','21'],
-    '32': ['21','31','41','43','33','23','22'],
+    '32': ['21','31','33','23','22'],
     '33': ['22','32','43','44','34','24','23'],
     '34': ['23','33','43','44','24'],
     #35
     '36': ['46','47','37','27','26'],
     '37': ['26','36','46','47','38','28','27'],
-    '38': ['27','37','47','49','39','29','28'],
+    '38': ['27','37','39','29','28'],
     '39': ['28','38','49','410','310','210','29'],
     '310': ['29','39','49','410','210'],
     '40': ['50','51','41','31','30'],
-    '41': ['30','40','50','51','32','31'],
+    '41': ['30','40','50','51','31'],
     #42
     '43': ['32','53','54','44','34','33'],
     '44': ['23','33','43','44','24'],
     #45
-    '46': ['55','56','57','47','37','36'],
-    '47': ['36','46','56','57','38','37'],
+    '46': ['56','57','47','37','36'],
+    '47': ['36','46','56','57','37'],
     #48
-    '49': ['59','510','410','310','39','38'],
+    '49': ['59','510','410','310','39'],
     '410': ['39','49','59','510','310'],
     '50': ['60','61','51','41','40'],
     '51': ['40','50','60','61','41'],
     #52
     '53': ['63','64','54','44','43'],
     '54': ['43','53','63','64','65','55','44'],
-    '55': ['44','54','64','65','66','56','46'],
+    '55': ['44','54','64','65','66','56'],
     '56': ['55','65','66','67','57','47','46'],
     '57': ['46','56','66','67','47'],
     #58
@@ -123,11 +174,18 @@ graph = {
     '810': ['79','89','710']
 
 }
-start_node = '50'
-goal_node = '510'
+#init
+ep_robot = robot.Robot()
+ep_robot.initialize(conn_type="ap")
+
+ep_chassis = ep_robot.chassis
+
+start_node = '510'
+goal_node = '50'
 path_to_goal = bfs(graph, start_node, goal_node)
 if path_to_goal:
     print("Path to goal:", path_to_goal)
+    movePath(path_to_goal)
 else:
     print("Goal not found.")
 
