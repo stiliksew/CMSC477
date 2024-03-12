@@ -69,21 +69,12 @@ if __name__ == '__main__':
                 scalar_y = 2.5*pose[0][0] #controls displacement left-to-right from marker
                 scalar_z = 3*((pose[1][2]))*180 / np.pi
                 print(scalar_z)
-                """
+                
                 if scalar_x < 0 :
                     ep_chassis.drive_speed(x=-(-.35 + scalar_x*3)**2, y=scalar_y, z=3.5*scalar_z, timeout=5)
                 else :
                     ep_chassis.drive_speed(x=2*scalar_x**2, y=scalar_y, z=1.5*scalar_z, timeout=5)
                 ## for next time - change how scalar_z is +5 or -5 based on its sign
-                """
-                """
-                             if scalar_x < 0 and scalar_z <1 :
-                    ep_chassis.drive_speed(x=-(-.35 + scalar_x*3)**2, y=scalar_y, z=5*(5+scalar_z), timeout=5)
-                elif scalar_x < 0 and scalar_z >1 :
-                    ep_chassis.drive_speed(x=-(-.35 + scalar_x*3)**2, y=scalar_y, z=1.5*scalar_z, timeout=5)
-                else :
-                    ep_chassis.drive_speed(x=2*scalar_x**2, y=scalar_y, z=1.5*scalar_z, timeout=5)
-                """
                                 
                 
                 #print("rotation matrix: ", rot)
